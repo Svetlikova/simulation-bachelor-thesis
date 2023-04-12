@@ -3,35 +3,98 @@ import random
 rarityThree = ['Fang', 'Vanilla', 'Plume', 'Melantha', 'Cardigan', 'Beagle', 'Kroos',
                'Lava', 'Hibiscus', 'Ansel', 'Steward', 'Orchid', 'Catapult', 'Midnight', 'Spot', 'Popukar']
 #TODO finish lists so they are accurate
-rarityFour = ['Haze', 'Jessica', 'Meteor', 'Shirayuki', 'Scavenger', 'Vigna', 'Doberman', 'Matoimaru']
-rarityFive = ['test1', 'test2']
-raritySix = ['wintest']
+rarityFour = ['Haze', 'Jessica', 'Meteor', 'Shirayuki', 'Scavenger', 'Vigna', 'Doberman', 'Matoimaru', 'Frostleaf',
+              'Mousse', 'Gravel', 'Rope', 'Myrrh', 'Perfumer', 'Matterhorn', 'Cuora', 'Gummy', 'Deepcolor',
+              'Earthspirit', 'Shaw', 'Beehunter', 'Greyy', 'Vermeil', 'Myrtle', 'Sussurro', 'May', 'Ambriel',
+              'Utage', 'Podenco', 'Click', 'Cutter', 'Jaye', 'Aciddrop', 'Arene', 'Jackie', 'Pinecone', 'Beanstalk',
+              'Indigo', 'Roberta', 'Chestnut']
+rarityFive = ['Ptilopsis', 'Zima', 'Texas', 'Franka', 'Lappland', 'Specter', 'Blue Poison', 'Platinum',
+              'Meteorite', 'Skyfire', 'Mayer', 'Silence', 'Warfarin', 'Nearl', 'Projekt Red', 'Liskarm',
+              'Croissant', 'Provence', 'Firewatch', 'Cliffheart', 'Pramanix', 'Istina', 'Sora', 'Manticore',
+              'FEater', 'Nightmare', 'Swire', 'Executor', 'Asthesia', 'Glaucus', 'Waai Fu', 'GreyThroat',
+              'Reed', 'Broca', 'Hung', 'Leizi', 'Sesa', 'Leonhardt', 'Ayerscape', 'Asbestos', 'Tsukinogi',
+              'Beeswax', 'Chiave', 'Shamare', 'Elysium', 'Andrena', 'Flint', 'April', 'Whisperian', 'Kafka',
+              'Iris', 'Aosta', 'Mr. Nothing', 'Toddifons', 'Akafuyu', 'Kirara', 'La Pluma', 'Mulberry',
+              'Ashlock', 'Corroserum', 'Aurora', 'Blacknight', 'Quercus', 'Kazemaru', 'Rockrock', 'Windflit',
+              'Hibiscus the Purifier', 'Cantabile', 'Greyy the Lighteningbearer', 'Proviso']
+raritySix = ['testName']
 
+n = 0.02
+#first rarity type is selected, the chances are defined below
+
+'''it ncreses by 0.02 but there are 3 values, meaning '''
+probabilities = [0.4, 0.5, 0.08, 0.02]
 categories = ['rarityThree', 'rarityFour', 'rarityFive', 'raritySix']
 
-#first rarity type is selected, the chances are defined below
-probabilities = [0.4, 0.5, 0.08, 0.02]
-#def select() =
-selectRarity = random.choices(categories, probabilities)[0]
-print(selectRarity)
-set(selectRarity)
+def selectRarity():
+    return random.choices(categories, probabilities)[0]
+
+print('test, show rarity: ' + selectRarity())
+
 
 selectOperatorR3 = ''.join(random.choices(rarityThree))
 selectOperatorR4 = ''.join(random.choices(rarityFour))
+'''functions for 5/6* operators 
+TODO: rate up, needs to allow changes, when you add new operator or easily change up rarities'''
 selectOperatorR5 = ''.join(random.choices(rarityFive))
+'''TODO rate up'''
 selectOperatorR6 = ''.join(random.choices(raritySix))
 
 selected = None
-def selectOperator(selectRarity):
-    if (selectRarity == 'rarityFour'):
+'''function selects operation depending on selected rarity'''
+
+def probabilityReset( probabilities):
+    probabilities == [0.4, 0.5, 0.08, 0.02]
+    return set.probabilities
+def probabiliyUp(probabilities, increase_index, decrease_indices, increase_amount, decrease_amount):
+    probabilities == [0.4, 0.5, 0.08, n]
+    probabilities = get.probabilities
+    n
+
+
+
+
+def select_operator(selectRarity):
+    selected = None
+    if selectRarity == 'rarityFour':
         selected = selectOperatorR4
-    elif (selectRarity== 'rarityThree'):
+    elif selectRarity == 'rarityThree':
         selected= selectOperatorR3
-    elif (selectRarity == 'rarityFive'):
+    elif selectRarity == 'rarityFive':
         selected = selectOperatorR5
-    if (selectRarity =='raritySix'):
+    if selectRarity == 'raritySix':
         selected = selectOperatorR6
     return selected
 
-print(selectOperator(selectRarity))
 
+print('test, selected operator: ' + select_operator(selectRarity()))
+
+
+'''simulation, rational players, stops after he gets what he wanted'''
+
+count_pity = 0
+'''simulation
+roll tracks number of rolls'''
+def simulation():
+    stop = False
+    roll = 0
+    count_pity = 0
+    while not stop:
+        roll += 1
+        if roll <100:
+            rarity = selectRarity()
+            select_operator(rarity)
+            if rarity != 'raritySix':
+                count_pity += 1
+                print(roll)
+                print(select_operator(selectRarity()))
+            elif rarity == 'raritySix':
+                count_pity = 0
+                stop = True
+                print('the desired outcome was achieved, rational player stops rolling')
+                stop = True
+        elif roll >= 100:
+            stop = True
+            print('simulation finished')
+
+print(simulation())
