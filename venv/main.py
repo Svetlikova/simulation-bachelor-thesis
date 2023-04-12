@@ -32,13 +32,19 @@ def selectRarity():
 print('test, show rarity: ' + selectRarity())
 
 
-selectOperatorR3 = ''.join(random.choices(rarityThree))
-selectOperatorR4 = ''.join(random.choices(rarityFour))
+def selectOperatorR3():
+    return ''.join(random.choices(rarityThree))
+
+def selectOperatorR4():
+    return' '.join(random.choices(rarityFour))
 '''functions for 5/6* operators 
 TODO: rate up, needs to allow changes, when you add new operator or easily change up rarities'''
-selectOperatorR5 = ''.join(random.choices(rarityFive))
+def selectOperatorR5():
+    return ''.join(random.choices(rarityFive))
 '''TODO rate up'''
-selectOperatorR6 = ''.join(random.choices(raritySix))
+
+def selectOperatorR6():
+    return''.join(random.choices(raritySix))
 
 selected = None
 '''function selects operation depending on selected rarity'''
@@ -46,24 +52,18 @@ selected = None
 def probabilityReset( probabilities):
     probabilities == [0.4, 0.5, 0.08, 0.02]
     return set.probabilities
-def probabiliyUp(probabilities, increase_index, decrease_indices, increase_amount, decrease_amount):
-    probabilities == [0.4, 0.5, 0.08, n]
-    probabilities = get.probabilities
-    n
-
-
 
 
 def select_operator(selectRarity):
     selected = None
     if selectRarity == 'rarityFour':
-        selected = selectOperatorR4
+        selected = selectOperatorR4()
     elif selectRarity == 'rarityThree':
-        selected= selectOperatorR3
+        selected= selectOperatorR3()
     elif selectRarity == 'rarityFive':
-        selected = selectOperatorR5
+        selected = selectOperatorR5()
     if selectRarity == 'raritySix':
-        selected = selectOperatorR6
+        selected = selectOperatorR6()
     return selected
 
 
@@ -83,13 +83,17 @@ def simulation():
         roll += 1
         if roll <100:
             rarity = selectRarity()
-            select_operator(rarity)
+            operator = select_operator(rarity)
             if rarity != 'raritySix':
                 count_pity += 1
                 print(roll)
-                print(select_operator(selectRarity()))
+                print(rarity)
+                print(operator)
             elif rarity == 'raritySix':
                 count_pity = 0
+                print(roll)
+                print(rarity)
+                print(operator)
                 stop = True
                 print('the desired outcome was achieved, rational player stops rolling')
                 stop = True
