@@ -1,4 +1,5 @@
 import random
+import csv
 
 rarityThree = ['Fang', 'Vanilla', 'Plume', 'Melantha', 'Cardigan', 'Beagle', 'Kroos',
                'Lava', 'Hibiscus', 'Ansel', 'Steward', 'Orchid', 'Catapult', 'Midnight', 'Spot', 'Popukar']
@@ -19,14 +20,14 @@ rarityFive = ['Ptilopsis', 'Zima', 'Texas', 'Franka', 'Lappland', 'Specter', 'Bl
               'Hibiscus the Purifier', 'Cantabile', 'Greyy the Lighteningbearer', 'Proviso']
 raritySix = ['testName']
 
-n = 0.02
+pity = 0.02
 #first rarity type is selected, the chances are defined below
 
-'''it ncreses by 0.02 but there are 3 values, meaning '''
-probabilities = [0.4, 0.5, 0.08, n]
+
 categories = ['rarityThree', 'rarityFour', 'rarityFive', 'raritySix']
 
-def selectRarity():
+def selectRarity(pity):
+    probabilities = probabilitySet(pity)
     return random.choices(categories, probabilities)[0]
 
 def selectOperatorR3():
@@ -46,19 +47,28 @@ def selectOperatorR6():
 selected = None
 '''function selects operation depending on selected rarity'''
 
-def probabilityReset(probabilities):
-    probabilities == [0.4, 0.5, 0.08, n]
+def probabilityReset(probabilities, p1, p2, p3, p4):
+    probabilities [p1] = 0.4
+    probabilities [p2] = 0.5
+    probabilities [p3] = 0.08
+    probabilities [p4] = 0.02
     return probabilities
 
 '''sets probability'''
-def pprobabilitySet(probabilities, n, pity):
-    floatPity = pity
-    intPity = int(floatPity)
-    probabilities[int (n)] = intPity
+def probabilitySet(pity):
+# Increase the probability of RaritySix
+    newProbability = [(((1 - pity) / 0.98) * 0.4), (((1 - pity) / 0.98) * 0.5), (((1 - pity) / 0.98) * 0.08), pity]
+#Decrese the other probabilities
+    probabilities = newProbability
+#Normalization of the probabilities - to ensure their sum equals to 1
+    totalProbability = round(sum(newProbability),15)
+    if totalProbability != 1:
+        print("!ERROR, TOTAL PROBABILITY HAS TO SUM TO 1, total probability:")
+        print(totalProbability)
     return probabilities
 
 
-    
+
 
 
 def select_operator(selectRarity):
@@ -76,44 +86,49 @@ def select_operator(selectRarity):
 
 '''simulation, rational players, stops after he gets what he wanted'''
 
-pity = 0
+
 '''@simulation
 roll tracks number of rolls'''
+number_of_rolls = 100
 
-
-def simulation():
+def simulation(number_of_rolls):
     stop = False
     roll = 0
     pity = 0.02
     while not stop:
         roll += 1
-        if roll <= 100:
-            rarity = selectRarity()
+        if roll <= number_of_rolls:
+            rarity = selectRarity(pity)
             operator = select_operator(rarity)
+            print("_ _ _ _ _ _ _ _ _ _ _ _ ")
             if rarity != 'raritySix' and roll < 50:
                 print(roll)
                 print(rarity)
                 print(operator)
-                print(pity)
+                #print(pity)
+                print(probabilitySet(pity))
             elif rarity != 'raritySix' and roll >= 50:
                 pity += 0.02
                 pity = round(pity, 2)
+                probabilitySet(pity)
                 print(roll)
                 print(rarity)
                 print(operator)
-                print(pity)
-                pprobabilitySet(probabilities, n, pity)
+                #print(pity)
+                print(probabilitySet(pity))
                 '''TODO pity rate up'''
             elif rarity == 'raritySix':
-                pity = 0
-                probabilityReset(probabilities)
+                pity = 0.02
+                probabilitySet(pity)
                 print(roll)
                 print(rarity)
                 print(operator)
+                #print(pity)
+                print(probabilitySet(pity))
                 print('the desired outcome was achieved, rational player stops rolling')
                 stop = True
-        elif roll >= 100:
+        elif roll >= number_of_rolls:
             stop = True
             print('simulation finished')
 
-print(simulation())
+print(simulation(number_of_rolls))
