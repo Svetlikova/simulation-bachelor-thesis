@@ -23,14 +23,11 @@ n = 0.02
 #first rarity type is selected, the chances are defined below
 
 '''it ncreses by 0.02 but there are 3 values, meaning '''
-probabilities = [0.4, 0.5, 0.08, 0.02]
+probabilities = [0.4, 0.5, 0.08, n]
 categories = ['rarityThree', 'rarityFour', 'rarityFive', 'raritySix']
 
 def selectRarity():
     return random.choices(categories, probabilities)[0]
-
-print('test, show rarity: ' + selectRarity())
-
 
 def selectOperatorR3():
     return ''.join(random.choices(rarityThree))
@@ -49,9 +46,19 @@ def selectOperatorR6():
 selected = None
 '''function selects operation depending on selected rarity'''
 
-def probabilityReset( probabilities):
-    probabilities == [0.4, 0.5, 0.08, 0.02]
-    return set.probabilities
+def probabilityReset(probabilities):
+    probabilities == [0.4, 0.5, 0.08, n]
+    return probabilities
+
+'''sets probability'''
+def pprobabilitySet(probabilities, n, pity):
+    floatPity = pity
+    intPity = int(floatPity)
+    probabilities[int (n)] = intPity
+    return probabilities
+
+
+    
 
 
 def select_operator(selectRarity):
@@ -62,39 +69,47 @@ def select_operator(selectRarity):
         selected= selectOperatorR3()
     elif selectRarity == 'rarityFive':
         selected = selectOperatorR5()
-    if selectRarity == 'raritySix':
+    elif selectRarity == 'raritySix':
         selected = selectOperatorR6()
     return selected
 
 
-print('test, selected operator: ' + select_operator(selectRarity()))
-
-
 '''simulation, rational players, stops after he gets what he wanted'''
 
-count_pity = 0
-'''simulation
+pity = 0
+'''@simulation
 roll tracks number of rolls'''
+
+
 def simulation():
     stop = False
     roll = 0
-    count_pity = 0
+    pity = 0.02
     while not stop:
         roll += 1
-        if roll <100:
+        if roll <= 100:
             rarity = selectRarity()
             operator = select_operator(rarity)
-            if rarity != 'raritySix':
-                count_pity += 1
+            if rarity != 'raritySix' and roll < 50:
                 print(roll)
                 print(rarity)
                 print(operator)
+                print(pity)
+            elif rarity != 'raritySix' and roll >= 50:
+                pity += 0.02
+                pity = round(pity, 2)
+                print(roll)
+                print(rarity)
+                print(operator)
+                print(pity)
+                pprobabilitySet(probabilities, n, pity)
+                '''TODO pity rate up'''
             elif rarity == 'raritySix':
-                count_pity = 0
+                pity = 0
+                probabilityReset(probabilities)
                 print(roll)
                 print(rarity)
                 print(operator)
-                stop = True
                 print('the desired outcome was achieved, rational player stops rolling')
                 stop = True
         elif roll >= 100:
