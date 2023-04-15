@@ -84,11 +84,7 @@ def select_operator(selectRarity):
     return selected
 
 
-'''simulation, rational players, stops after he gets what he wanted'''
-
-
-'''@simulation
-roll tracks number of rolls'''
+'''Set number of rolls'''
 number_of_rolls = 100
 
 def simulation(number_of_rolls):
@@ -100,7 +96,11 @@ def simulation(number_of_rolls):
         if roll <= number_of_rolls:
             rarity = selectRarity(pity)
             operator = select_operator(rarity)
+            data = [roll, rarity, operator]
             print("_ _ _ _ _ _ _ _ _ _ _ _ ")
+            with open ('simulation.csv','a', newline='') as csvfile:
+                writer=csv.writer(csvfile)
+                writer.writerow(data)
             if rarity != 'raritySix' and roll < 50:
                 print(roll)
                 print(rarity)
@@ -116,7 +116,6 @@ def simulation(number_of_rolls):
                 print(operator)
                 #print(pity)
                 print(probabilitySet(pity))
-                '''TODO pity rate up'''
             elif rarity == 'raritySix':
                 pity = 0.02
                 probabilitySet(pity)
@@ -125,10 +124,11 @@ def simulation(number_of_rolls):
                 print(operator)
                 #print(pity)
                 print(probabilitySet(pity))
-                print('the desired outcome was achieved, rational player stops rolling')
-                stop = True
+                #print('the desired outcome was achieved, rational player stops rolling')
+                #stop = True
         elif roll >= number_of_rolls:
             stop = True
             print('simulation finished')
 
 print(simulation(number_of_rolls))
+
