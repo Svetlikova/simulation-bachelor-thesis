@@ -1,5 +1,11 @@
-import random
 import csv
+import random
+
+import matplotlib.pyplot as mpt
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas
+import pandas as pd
 
 rarityThree = ['Fang', 'Vanilla', 'Plume', 'Melantha', 'Cardigan', 'Beagle', 'Kroos',
                'Lava', 'Hibiscus', 'Ansel', 'Steward', 'Orchid', 'Catapult', 'Midnight', 'Spot', 'Popukar']
@@ -9,7 +15,8 @@ rarityFour = ['Haze', 'Jessica', 'Meteor', 'Shirayuki', 'Scavenger', 'Vigna', 'D
               'Earthspirit', 'Shaw', 'Beehunter', 'Greyy', 'Vermeil', 'Myrtle', 'Sussurro', 'May', 'Ambriel',
               'Utage', 'Podenco', 'Click', 'Cutter', 'Jaye', 'Aciddrop', 'Arene', 'Jackie', 'Pinecone', 'Beanstalk',
               'Indigo', 'Roberta', 'Chestnut']
-rarityFive = ['Ptilopsis', 'Zima', 'Texas', 'Franka', 'Lappland', 'Specter', 'Blue Poison', 'Platinum',
+rarityFive = ['Ptilopsis', 'Zima', 'Texas', #'Franka',
+              'Lappland', 'Specter', 'Blue Poison', 'Platinum',
               'Meteorite', 'Skyfire', 'Mayer', 'Silence', 'Warfarin', 'Nearl', 'Projekt Red', 'Liskarm',
               'Croissant', 'Provence', 'Firewatch', 'Cliffheart', 'Pramanix', 'Istina', 'Sora', 'Manticore',
               'FEater', 'Nightmare', 'Swire', 'Executor', 'Asthesia', 'Glaucus', 'Waai Fu', 'GreyThroat',
@@ -17,14 +24,21 @@ rarityFive = ['Ptilopsis', 'Zima', 'Texas', 'Franka', 'Lappland', 'Specter', 'Bl
               'Beeswax', 'Chiave', 'Shamare', 'Elysium', 'Andrena', 'Flint', 'April', 'Whisperian', 'Kafka',
               'Iris', 'Aosta', 'Mr. Nothing', 'Toddifons', 'Akafuyu', 'Kirara', 'La Pluma', 'Mulberry',
               'Ashlock', 'Corroserum', 'Aurora', 'Blacknight', 'Quercus', 'Kazemaru', 'Rockrock', 'Windflit',
-              'Hibiscus the Purifier', 'Cantabile', 'Greyy the Lighteningbearer', 'Proviso']
-raritySix = ['testName']
+              'Hibiscus the Purifier', 'Cantabile', 'Greyy the Lighteningbearer', #'Proviso'
+              ]
+raritySix = ['Exusiai', 'Siege', 'Ifrit', 'Eyjafjalla', 'Angelina', 'Shining', 'Nightingale', 'Hoshiguma',
+             'Saria', 'SilverAsh', 'Skadi', 'Ch\'en', 'Magallan', 'Hellagur', 'Schwarz', 'Mostima', 'Blaze',
+             'Aak', 'Ceobe', 'Bagpipe', 'Rosa', 'Suzuran', 'Phantom', 'Weedy', 'Thorns', 'Eunectes', 'Surtr',
+             'Mudrock', 'Mountain', 'Archetto', 'Blemishine', 'Saga', 'Passanger', 'Kal\'tsit', 'Carnelian',
+             'Pallas', 'Mizuki', 'Saileach', 'Fartooth', 'Flametail', 'Gnosis', 'Lee', 'Goldenglow', 'Fiamemtta',
+             'Horn', 'Irene', 'Ebenholz', 'Pozëmka', 'Dorothy', #'Mlynar'
+             ]
 
 pity = 0.02
 #first rarity type is selected, the chances are defined below
 
-
-categories = ['rarityThree', 'rarityFour', 'rarityFive', 'raritySix']
+#Categories represent rarities
+categories = [3, 4, 5, 6]
 
 def selectRarity(pity):
     probabilities = probabilitySet(pity)
@@ -35,26 +49,37 @@ def selectOperatorR3():
 
 def selectOperatorR4():
     return' '.join(random.choices(rarityFour))
-'''functions for 5/6* operators 
-TODO: rate up, needs to allow changes, when you add new operator or easily change up rarities'''
+
 def selectOperatorR5():
-    return ''.join(random.choices(rarityFive))
-'''TODO rate up'''
+    #Specific operators rate up - 50% chance one of the 5 star operators will be one of selected
+    rate_up = ['Franka', 'Proviso']
+    rate_up_choice = ['rate_up', 'no_rate_up']
+    chose = ''.join(random.choices(rate_up_choice))
+    if chose == 'rate_up':
+        result = ''.join(random.choices(rate_up))
+    elif chose == 'no_rate_up':
+        result = ''.join(random.choices(rarityFive))
+    else:
+        raise "Error, invalid value in rarity 5 selection."
+    return result
 
 def selectOperatorR6():
-    return''.join(random.choices(raritySix))
+    rate_up = ['Mlynar']
+    rate_up_choice = ['rate_up', 'no_rate_up']
+    chose = ''.join(random.choices(rate_up_choice))
+    if chose == 'rate_up':
+        result = ''.join(random.choices(rate_up))
+    elif chose == 'no_rate_up':
+        result = ''.join(random.choices(raritySix))
+    else:
+        raise "Error, invalid value in rarity 6 selection."
+    return result
 
 selected = None
 '''function selects operation depending on selected rarity'''
 
-def probabilityReset(probabilities, p1, p2, p3, p4):
-    probabilities [p1] = 0.4
-    probabilities [p2] = 0.5
-    probabilities [p3] = 0.08
-    probabilities [p4] = 0.02
-    return probabilities
 
-'''sets probability'''
+'''Set probability based on current pity'''
 def probabilitySet(pity):
 # Increase the probability of RaritySix
     newProbability = [(((1 - pity) / 0.98) * 0.4), (((1 - pity) / 0.98) * 0.5), (((1 - pity) / 0.98) * 0.08), pity]
@@ -63,23 +88,21 @@ def probabilitySet(pity):
 #Normalization of the probabilities - to ensure their sum equals to 1
     totalProbability = round(sum(newProbability),15)
     if totalProbability != 1:
-        print("!ERROR, TOTAL PROBABILITY HAS TO SUM TO 1, total probability:")
+        return("!ERROR, TOTAL PROBABILITY HAS TO SUM TO 1, total probability: ")
         print(totalProbability)
     return probabilities
 
 
 
-
-
 def select_operator(selectRarity):
     selected = None
-    if selectRarity == 'rarityFour':
+    if selectRarity == 4:
         selected = selectOperatorR4()
-    elif selectRarity == 'rarityThree':
+    elif selectRarity == 3:
         selected= selectOperatorR3()
-    elif selectRarity == 'rarityFive':
+    elif selectRarity == 5:
         selected = selectOperatorR5()
-    elif selectRarity == 'raritySix':
+    elif selectRarity == 6:
         selected = selectOperatorR6()
     return selected
 
@@ -98,16 +121,17 @@ def simulation(number_of_rolls):
             operator = select_operator(rarity)
             data = [roll, rarity, operator]
             print("_ _ _ _ _ _ _ _ _ _ _ _ ")
+            #write data in csv for further work with results
             with open ('simulation.csv','a', newline='') as csvfile:
                 writer=csv.writer(csvfile)
                 writer.writerow(data)
-            if rarity != 'raritySix' and roll < 50:
+            if rarity != 6 and roll < 50:
                 print(roll)
                 print(rarity)
                 print(operator)
                 #print(pity)
                 print(probabilitySet(pity))
-            elif rarity != 'raritySix' and roll >= 50:
+            elif rarity != 6 and roll >= 50:
                 pity += 0.02
                 pity = round(pity, 2)
                 probabilitySet(pity)
@@ -116,7 +140,7 @@ def simulation(number_of_rolls):
                 print(operator)
                 #print(pity)
                 print(probabilitySet(pity))
-            elif rarity == 'raritySix':
+            elif rarity == 6:
                 pity = 0.02
                 probabilitySet(pity)
                 print(roll)
@@ -132,3 +156,18 @@ def simulation(number_of_rolls):
 
 print(simulation(number_of_rolls))
 
+
+'''graphical representation of resaults - histogram a poxplot from data'''
+df = pd.read_csv('simulation.csv')
+#print(df.describe())
+#plt.hist(df['Rarity'])
+#plt.show()
+
+df.boxplot('Roll Number', by='Rarity')
+
+
+
+plt.show()
+#plt.xlabel('Rarity')
+#plt.ylabel('Value')
+#plt.title('Boxplot of Simulation Results')
