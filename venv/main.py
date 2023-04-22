@@ -1,10 +1,6 @@
 import csv
 import random
-
-import matplotlib.pyplot as mpt
 import matplotlib.pyplot as plt
-import numpy as np
-import pandas
 import pandas as pd
 
 # Sample space
@@ -35,14 +31,24 @@ rarity_six = ['Exusiai', 'Siege', 'Ifrit', 'Eyjafjalla', 'Angelina', 'Shining', 
               ]
 # Value mapped at every point of experiment - determines probabilities
 pity = 0.02
-
 # Sample space - categories represent rarities
 categories = [3, 4, 5, 6]
 
-# Function select_rarity, simpy based on given probabilities
-def select_rarity():
-    probabilities = probabilitySet(pity)
-    return random.choices(categories, probabilities)[0]
+# Probability measure - assign probability based on pity - value changed by previous state
+def probability_set(pity):
+    # Increase the probability of RaritySix
+    newProbability = [(((1 - pity) / 0.98) * 0.4), (((1 - pity) / 0.98) * 0.5), (((1 - pity) / 0.98) * 0.08), pity]
+    # Decrese the other probabilities
+    probabilities = newProbability
+    # Normalization of the probabilities - to ensure their sum equals to 1
+    totalProbability = round(sum(newProbability), 16)
+    if totalProbability != 1:
+        print(totalProbability)
+        return ("Total sum of probabilities has to equal!")
+    return probabilities
+
+probabilities = probability_set(pity)
+
 
 
 # Functions selecting specific operator in case defined rarity has been selected
@@ -85,20 +91,9 @@ selected = None
 '''function selects operation depending on selected rarity'''
 
 
-# Probability measure - assign probability based on pity - value changed by previous state
-def probabilitySet(pity):
-    # Increase the probability of RaritySix
-    newProbability = [(((1 - pity) / 0.98) * 0.4), (((1 - pity) / 0.98) * 0.5), (((1 - pity) / 0.98) * 0.08), pity]
-    # Decrese the other probabilities
-    probabilities = newProbability
-    # Normalization of the probabilities - to ensure their sum equals to 1
-    totalProbability = round(sum(newProbability), 15)
-    if totalProbability != 1:
-        print(totalProbability)
-        return ("!ERROR, TOTAL PROBABILITY HAS TO SUM TO 1, total probability: ")
-    return probabilities
 
 
+# Based on rarity this function selects operator
 def select_operator(selectRarity):
     selected = None
     if selectRarity == 4:
@@ -113,68 +108,79 @@ def select_operator(selectRarity):
 
 
 # CSV writer, function used anywhere where is needed to transfer data into csv
+# Change the name of CSV file for more outputs
 def csv_write_data(data):
     with open('simulation.csv', 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(data)
+        print("_ _ _ _ _ _ _ _ _ _ _ _ ")
+        print(data)
 
 
-# The main function
+# The main function of simulation
 def simulation():
-    number_of_rolls = 100
+    # Define initial values
+    number_of_rolls = 1000
     stop = False
     roll = 0
-    pity = 0.02
-    change = []
+    pity = 0.00
+    change = False
+    pity_counter = 0
+    cost = - 600
     while not stop:
+        probabilities = probability_set(pity)
         roll += 1
+        cost += 600
+        print("Pity counter value is: " + str(pity_counter)+"/50")
+        print(probabilities)
         # Operator of the rarity 5 or 6 guaranteed in the first 10 rolls
-        if roll == 10 and (5 or 6) not in change:
+        if roll == 10 and change is False:
             rarity = random.choices([5, 6], [0.8, 0.2])[0]
             operator = select_operator(rarity)
             data = [roll, rarity, operator]
             csv_write_data(data)
+            if rarity != 6:
+                pity_counter += 1
+            else:
+                pity_counter = 0
+                pity = round (0.02, 2)
         elif roll <= number_of_rolls:
-            rarity = select_rarity()
+            rarity = random.choices(categories, probabilities)[0]
             operator = select_operator(rarity)
             data = [roll, rarity, operator]
-            change.append(rarity)
-            print("_ _ _ _ _ _ _ _ _ _ _ _ ")
             # write data in csv for further work with results
             csv_write_data(data)
-            if rarity != 6 and roll < 50:
-                print(roll)
-                print(rarity)
-                print(operator)
-                print(probabilitySet(pity))
-            elif rarity != 6 and roll >= 50:
-                pity += 0.02
+            if rarity == 5:
+                change = True
+            if rarity != 6 and pity_counter < 50:
+                pity_counter += 1
+                if pity_counter == 50:
+                    pity += 1
+            elif rarity != 6 and pity_counter > 50:
+                pity += 1
                 pity = round(pity, 2)
-                probabilitySet(pity)
-                print(roll)
-                print(rarity)
-                print(operator)
-                # print(pity)
-                print(probabilitySet(pity))
             elif rarity == 6:
-                pity = 0.02
-                probabilitySet(pity)
-                print(roll)
-                print(rarity)
-                print(operator)
-                # print(pity)
-                print(probabilitySet(pity))
-                # print('the desired outcome was achieved, rational player stops rolling')
-                # stop = True
+                change = True
+                pity = 0.00
+                pity_counter = 0
+                # In case we want to predict real situation we set the 'stop' condition here
+                # print('The desired outcome was achieved, rational player stops rolling.')
+                if operator == 'Mlynar':
+                    stop = True
         elif roll >= number_of_rolls:
             stop = True
-            print('simulation finished')
+            print('simulation finished, total number of rolls was '+str(number_of_rolls)
+                  + ' and total cost was '+ str(cost) + '.')
 
 
-print(simulation())
+# Run simulation 'n' number of times
+n = 1
+for _ in range(n):
+    simulation()
+    print('Simulation finished ' + str(n) + ' time(s)')
 
 
-# Package pandas used to visualize output of simulation
+# Visualization of the outputs of simulation
 df = pd.read_csv('simulation.csv')
 print(df.describe())
 # Histogram
