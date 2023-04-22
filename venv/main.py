@@ -34,6 +34,7 @@ pity = 0.02
 # Sample space - categories represent rarities
 categories = [3, 4, 5, 6]
 
+
 # Probability measure - assign probability based on pity - value changed by previous state
 def probability_set(pity):
     # Increase the probability of RaritySix
@@ -46,6 +47,7 @@ def probability_set(pity):
         print(total_probability)
         raise "Total sum of probabilities has to equal! instead its value is" + str(total_probability) +"!"
     return probabilities
+
 
 probabilities = probability_set(pity)
 
@@ -92,18 +94,17 @@ def select_operator_r6():
 def select_operator(select_rarity):
     selected = None
     if select_rarity == 4:
-        selected = selectOperatorR4()
+        selected = select_operator_r4()
     elif select_rarity == 3:
-        selected = selectOperatorR3()
+        selected = select_operator_r3()
     elif select_rarity == 5:
-        selected = selectOperatorR5()
+        selected = select_operator_r5()
     elif select_rarity == 6:
-        selected = selectOperatorR6()
+        selected = select_operator_r6()
     return selected
 
 
-# CSV writer, function used to transfer data into csv
-# Change the name of CSV file for more outputs
+# Function used to transfer data about each roll into csv
 def csv_write_data(data):
     with open('simulation.csv', 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
@@ -111,12 +112,15 @@ def csv_write_data(data):
         print("_ _ _ _ _ _ _ _ _ _ _ _ ")
         print(data)
 
+
+#Function transfers data about results of simulation in a file
 def csv_write_cost(rows_cost):
     with open('cost.csv', 'a', newline='') as csvfile:
         writer = csv.writer(csvfile)
         writer.writerow(rows_cost)
 
 # The main function of simulation
+# number of rolls in single run defined by the variable "number_of_rolls"
 def simulation():
     # Define initial values
     number_of_rolls = 1000
@@ -167,21 +171,22 @@ def simulation():
                 if operator == 'Mlynar':
                     stop = True
                     rows_cost = [roll, cost, 1]
-                    print('Desired outcome achieved, simulation finished. Total number of rolls was '+str(number_of_rolls)
-                  + ' and total cost was '+ str(cost) + '.')
+                    print('Desired outcome achieved, simulation finished. T'
+                          'otal number of rolls was ' + str(number_of_rolls)
+                            + ' and total cost was ' + str(cost) + '.')
                     csv_write_cost(rows_cost)
         elif roll >= number_of_rolls:
             cost -= 600
             stop = True
             rows_cost = [roll, cost, 0]
             csv_write_cost(rows_cost)
-            print('simulation finished, total number of rolls was '+str(number_of_rolls)
+            print('simulation finished, total number of rolls was ' + str(number_of_rolls)
                   + ' and total cost was '+ str(cost) + '.')
 
 
 # Run simulation 'n' number of times
 # For analysis only set 'n' to '0'
-n = 0
+n = 900
 for _ in range(n):
     simulation()
     print('Simulation finished ' + str(n) + ' time(s).')
@@ -200,14 +205,21 @@ plt.show()
 df.boxplot('Roll number', by='Rarity')
 plt.title('\n')
 plt.xlabel('Rarity')
-plt.ylabel('Roll Number')
+plt.ylabel('Roll number')
 plt.show()
+
+# Bar
+
+
 
 # Data about results, cost prediction
 df = pd.read_csv('cost.csv')
 print(df.describe())
-# Histogram
-plt.hist(df['Roll number'], bins=1)
-plt.title('Histogram Result  \n')
+
+
+df.boxplot('Roll number', by='Result')
+plt.title('\n')
+plt.xlabel('One hundred simulations')
+plt.ylabel('Roll number')
 plt.show()
 # Boxplot
